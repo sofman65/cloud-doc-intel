@@ -10,5 +10,5 @@ variable "environment" {
 
 variable "aws_region" {
   type        = string
-  default     = "eu-west-1"
+  default     = "us-east-1"
 }
