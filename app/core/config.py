@@ -12,11 +12,11 @@ class Settings(BaseSettings):
     aws_region: str = "eu-west-1"
 
     # Storage
-    s3_bucket_name: str
+    s3_bucket_name: str = "nameOFbUCKET"
     s3_prefix: str = "documents/"
 
     # Database
-    dynamodb_table_name: str
+    dynamodb_table_name: str = "Dynamo"
 
     # Features
     enable_ai: bool = False

@@ -5,3 +5,5 @@ pydantic
 python-multipart
 httpx
 python-dotenv
+pydantic-settings
+scalar_fastapi

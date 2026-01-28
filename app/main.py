@@ -1,16 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from scalar_fastapi import get_scalar_api_reference
+from fastapi import FastAPI
 from app.core.config import get_settings
+from app.api.v1.router import api_router
 
 settings = get_settings()
-app = FastAPI()
 
+app = FastAPI(title=settings.app_name)
 
-@app.get("/health")
-def health():
-    return {"status": "ok", "env": settings}
-
-
-@app.get("/scalar_docs", include_in_schema=False)
-def get_scalar_docs():
-    return get_scalar_api_reference(openapi_url=app.openapi_url, title="Scalar API")
+app.include_router(
+    api_router,
+    prefix="/api/v1",
+)
