@@ -7,6 +7,7 @@ from uuid import uuid4
 import boto3
 from botocore.client import BaseClient
 from fastapi import UploadFile
+from botocore.exceptions import ClientError
 
 from app.core.config import get_settings
 
@@ -32,6 +33,34 @@ def get_s3_client() -> BaseClient:
 def build_object_key(filename: str) -> str:
     safe_name = filename.strip().replace("/", "_")
     return f"{settings.s3_prefix}{uuid4()}-{safe_name}"
+
+
+def delete_from_s3(*, bucket: str, key: str) -> None:
+    s3 = get_s3_client()
+    try:
+        s3.delete_object(Bucket=bucket, Key=key)
+    except ClientError:
+        raise
+
+
+def generate_presigned_download_url(
+    *,
+    bucket: str,
+    key: str,
+    expires_in_seconds: int = 300,  # 5 minutes
+) -> str:
+    s3 = get_s3_client()
+
+    url = s3.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={
+            "Bucket": bucket,
+            "Key": key,
+        },
+        ExpiresIn=expires_in_seconds,
+    )
+
+    return url
 
 
 async def upload_to_s3(file: UploadFile, *, key: str | None = None) -> S3UploadResult:

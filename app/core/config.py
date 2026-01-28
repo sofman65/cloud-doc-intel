@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # AWS
-    aws_region: str = "eu-east-1"
+    aws_region: str = "us-east-1"
 
     # Storage
     s3_bucket_name: str = "cloud-doc-intel-dev"

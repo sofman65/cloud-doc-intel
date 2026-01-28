@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.env
+.env.*
+venv/
+docVenv/
+.venv/
+
+.git/
+.gitignore
+
+infra/terraform/.terraform/
+infra/terraform/terraform.tfstate*

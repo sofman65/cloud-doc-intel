@@ -8,3 +8,8 @@ output "dynamodb_table_name" {
   value       = aws_dynamodb_table.documents.name
   description = "DynamoDB table for document metadata"
 }
+
+
+output "alb_url" {
+  value = aws_lb.this.dns_name
+}

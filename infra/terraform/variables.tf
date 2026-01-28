@@ -12,3 +12,9 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "ecr_image_url" {
+  type = string
+  description = "ECR image URI for the backend service"
+}
+
