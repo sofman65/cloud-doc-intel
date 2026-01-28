@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Query
-from app.services.database.dynamodb_service import list_documents
+from fastapi import APIRouter, Query, HTTPException, status
+from app.services.database.dynamodb_service import list_documents, get_document_by_id
 
 router = APIRouter(tags=["documents"])
 
@@ -14,3 +14,16 @@ def get_documents(
         "count": len(documents),
         "items": documents,
     }
+
+
+@router.get("/documents/{document_id}")
+def get_document(document_id: str):
+    document = get_document_by_id(document_id)
+
+    if not document:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    return document

@@ -4,7 +4,8 @@ from datetime import datetime, timezone
 
 import boto3
 from botocore.client import BaseClient
-from typing import List, Dict
+from botocore.exceptions import ClientError
+from typing import List, Dict, Optional
 
 from app.core.config import get_settings
 
@@ -63,3 +64,31 @@ def list_documents(limit: int = 20) -> List[Dict]:
         )
 
     return documents
+
+
+def get_document_by_id(document_id: str) -> Optional[Dict]:
+    dynamodb = get_dynamodb_client()
+
+    try:
+        response = dynamodb.get_item(
+            TableName=settings.dynamodb_table_name,
+            Key={
+                "document_id": {"S": document_id},
+            },
+        )
+    except ClientError:
+        raise
+
+    item = response.get("Item")
+
+    if not item:
+        return None
+
+    return {
+        "document_id": item["document_id"]["S"],
+        "filename": item["filename"]["S"],
+        "s3_bucket": item["s3_bucket"]["S"],
+        "s3_key": item["s3_key"]["S"],
+        "content_type": item.get("content_type", {}).get("S"),
+        "created_at": item["created_at"]["S"],
+    }
