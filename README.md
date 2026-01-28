@@ -32,29 +32,47 @@ This project focuses on:
 
 ## 🧠 Architecture Overview
 
-flowchart TD
-    Client["Client<br/>(Browser / API Consumer)"]
+```mermaid
+flowchart TB
+    CLIENT["Client
+(Browser / API Consumer)"]
 
-    APIGW["API Gateway"]
+    APIGW["API Gateway
+HTTP / REST"]
 
-    Lambda["AWS Lambda<br/>(FastAPI via Mangum)"]
+    LAMBDA["AWS Lambda
+FastAPI (ASGI)
+Mangum Adapter"]
 
-    Routes["API Routes<br/>(/api/v1/*)"]
-    Services["Services Layer<br/>(Business Logic)"]
+    ROUTES["API Routes
+/api/v1/*
+Validation & HTTP"]
 
-    S3["Amazon S3<br/>(Document Storage)"]
-    DynamoDB["DynamoDB<br/>(Metadata Store)"]
-    Bedrock["(Optional)<br/>AWS Bedrock / Textract"]
+    SERVICES["Services Layer
+Business Logic
+AWS Integrations"]
 
-    CloudWatch["CloudWatch<br/>(Logs & Metrics)"]
+    S3["Amazon S3
+Document Storage"]
 
-    Client --> APIGW
-    APIGW --> Lambda
-    Lambda --> Routes
-    Routes --> Services
+    DDB["DynamoDB
+Metadata / Index"]
 
-    Services --> S3
-    Services --> DynamoDB
-    Services --> Bedrock
+    AI["Optional AI Layer
+Bedrock / Textract"]
 
-    Lambda --> CloudWatch
+    CW["CloudWatch
+Logs & Metrics"]
+
+    CLIENT --> APIGW
+    APIGW --> LAMBDA
+
+    LAMBDA --> ROUTES
+    ROUTES --> SERVICES
+
+    SERVICES --> S3
+    SERVICES --> DDB
+    SERVICES --> AI
+
+    LAMBDA --> CW
+```
