@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from app.api.v1.routes import health
 from app.api.v1.routes import scalar
 from app.api.v1.routes import upload
+from app.api.v1.routes import documents
 
 api_router = APIRouter()
 
@@ -17,5 +18,10 @@ api_router.include_router(
 
 api_router.include_router(
     upload.router,
+    prefix="",
+)
+
+api_router.include_router(
+    documents.router,
     prefix="",
 )
