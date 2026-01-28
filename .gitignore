@@ -1,0 +1,48 @@
+# ----------------------------
+# Python
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.mypy_cache/
+.pytest_cache/
+
+# ----------------------------
+# Virtual environments
+# ----------------------------
+venv/
+.env/
+.env.local
+.env.dev
+.env.prod
+
+# ----------------------------
+# OS / Editor
+# ----------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ----------------------------
+# Logs
+# ----------------------------
+*.log
+
+# ----------------------------
+# Terraform
+# ----------------------------
+infra/terraform/.terraform/
+infra/terraform/**/*.tfstate
+infra/terraform/**/*.tfstate.backup
+infra/terraform/**/*.tfvars
+
+# ----------------------------
+# Build / packaging
+# ----------------------------
+dist/
+build/
+*.egg-info/
+lambda.zip
