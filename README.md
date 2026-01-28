@@ -1,34 +1,52 @@
 # Cloud Doc Intel Backend
 
-Production-style backend service built with **FastAPI** and **AWS**, designed to demonstrate real-world cloud engineering practices.
+Production-grade document ingestion backend built with **FastAPI** and deployed on **AWS ECS Fargate**, designed to demonstrate real-world cloud engineering and deployment practices.
 
-This project focuses on:
-- clean architecture
-- environment separation
-- AWS-native integrations
-- infrastructure as code
+The service provides a scalable API for uploading, storing, and retrieving documents using AWS-native services.
+
+---
+
+## 🎯 What This Project Does
+
+- Exposes a REST API for document upload and retrieval
+- Stores raw files in **Amazon S3**
+- Stores document metadata in **DynamoDB**
+- Serves downloads via **presigned S3 URLs**
+- Runs as a **containerized FastAPI service** behind an **Application Load Balancer**
+- Infrastructure fully managed with **Terraform**
 
 ---
 
 ## 🚀 Tech Stack
 
-**Backend**
+### Backend
 - FastAPI
 - Uvicorn
 - Pydantic
 
-**AWS**
-- Lambda + API Gateway
+### AWS
+- ECS Fargate (container runtime)
+- Application Load Balancer (public entry point)
 - S3 (document storage)
-- DynamoDB (metadata)
+- DynamoDB (metadata storage)
+- ECR (container registry)
 - IAM (least-privilege access)
-- CloudWatch (logging)
+- CloudWatch (logs & metrics)
 
-**Infrastructure**
-- Terraform (modular)
-- GitHub Actions (CI/CD)
+### Infrastructure
+- Terraform (Infrastructure as Code)
+- Docker (containerization)
 
 ---
+
+## Architecture
+See [docs/architecture.md](docs/architecture.md)
+
+## Local Development
+See [docs/local-development.md](docs/local-development.md)
+
+## Deployment
+See [docs/deployment.md](docs/deployment.md)
 
 ## 🧠 Architecture Overview
 
@@ -37,42 +55,35 @@ flowchart TB
     CLIENT["Client
 (Browser / API Consumer)"]
 
-    APIGW["API Gateway
-HTTP / REST"]
+    ALB["Application Load Balancer
+HTTP :80"]
 
-    LAMBDA["AWS Lambda
-FastAPI (ASGI)
-Mangum Adapter"]
+    ECS["ECS Fargate Service
+FastAPI + Uvicorn"]
 
     ROUTES["API Routes
-/api/v1/*
-Validation & HTTP"]
+/api/v1/*"]
 
-    SERVICES["Services Layer
-Business Logic
-AWS Integrations"]
+    SERVICES["Service Layer
+Business Logic"]
 
     S3["Amazon S3
 Document Storage"]
 
-    DDB["DynamoDB
-Metadata / Index"]
-
-    AI["Optional AI Layer
-Bedrock / Textract"]
+    DDB["Amazon DynamoDB
+Document Metadata"]
 
     CW["CloudWatch
 Logs & Metrics"]
 
-    CLIENT --> APIGW
-    APIGW --> LAMBDA
+    CLIENT --> ALB
+    ALB --> ECS
 
-    LAMBDA --> ROUTES
+    ECS --> ROUTES
     ROUTES --> SERVICES
 
     SERVICES --> S3
     SERVICES --> DDB
-    SERVICES --> AI
 
-    LAMBDA --> CW
-```
+    ECS --> CW
+
