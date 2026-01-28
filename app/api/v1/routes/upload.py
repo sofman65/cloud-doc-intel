@@ -5,7 +5,7 @@ from app.services.document_service import upload_service
 router = APIRouter(tags=["documents"])
 
 
-@router.post("upload", status_code=status.HTTP_201_CREATED)
+@router.post("/upload", status_code=status.HTTP_201_CREATED)
 async def upload(file: UploadFile = File(...)) -> Dict:
     if not file.filename:
         raise HTTPException(
@@ -19,4 +19,6 @@ async def upload(file: UploadFile = File(...)) -> Dict:
         "message": "Upload accepted",
         "document_id": result["document_id"],
         "filename": file.filename,
+        "s3_bucket": result["s3_bucket"],
+        "s3_key": result["s3_key"],
     }

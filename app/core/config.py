@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     aws_region: str = "eu-west-1"
 
     # Storage
-    s3_bucket_name: str = "nameOFbUCKET"
+    s3_bucket_name: str = "cloud-doc-intel-dev"
     s3_prefix: str = "documents/"
 
     # Database
