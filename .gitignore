@@ -18,6 +18,7 @@ docVenv/
 .env.local
 .env.dev
 .env.prod
+.env.local
 
 # ----------------------------
 # OS / Editor
