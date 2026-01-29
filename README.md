@@ -39,9 +39,6 @@ The service provides a scalable API for uploading, storing, and retrieving docum
 
 ---
 
-## Architecture
-See [docs/architecture.md](docs/architecture.md)
-
 ## Local Development
 See [docs/local-development.md](docs/local-development.md)
 

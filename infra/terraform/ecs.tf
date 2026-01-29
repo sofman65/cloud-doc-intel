@@ -23,6 +23,21 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role" "ecs_task_role" {
+  name = "${var.project_name}-ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
 
 resource "aws_ecs_task_definition" "backend" {
   family                   = "${var.project_name}-task"
@@ -31,6 +46,7 @@ resource "aws_ecs_task_definition" "backend" {
   cpu                      = 256
   memory                   = 512
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
 container_definitions = jsonencode([
   {
@@ -63,6 +79,36 @@ container_definitions = jsonencode([
 ])
 
 }
+
+resource "aws_iam_role_policy" "ecs_task_policy" {
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:Scan",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Query"
+        ]
+        Resource = "arn:aws:dynamodb:us-east-1:533267307199:table/documents-dev"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "arn:aws:s3:::cloud-doc-intel-dev/*"
+      }
+    ]
+  })
+}
+
 
 resource "aws_security_group" "alb" {
   name   = "${var.project_name}-alb"
@@ -133,7 +179,8 @@ resource "aws_ecs_service" "backend" {
   network_configuration {
     subnets         = data.aws_subnets.default.ids
     assign_public_ip = true
-    security_groups = [aws_security_group.alb.id]
+    security_groups = [aws_security_group.ecs.id]
+
   }
 
   load_balancer {
@@ -146,11 +193,32 @@ resource "aws_ecs_service" "backend" {
 }
 
 
+resource "aws_security_group" "ecs" {
+  name   = "${var.project_name}-ecs"
+  vpc_id = data.aws_vpc.default.id
+
+  ingress {
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 
 resource "aws_cloudwatch_log_group" "ecs" {
   name              = "/ecs/cloud-doc-intel"
   retention_in_days = 7
 }
+
+
+
 
 
