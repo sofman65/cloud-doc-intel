@@ -39,6 +39,8 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 
+
+
 resource "aws_ecs_task_definition" "backend" {
   family                   = "${var.project_name}-task"
   requires_compatibilities = ["FARGATE"]
@@ -108,6 +110,20 @@ resource "aws_iam_role_policy" "ecs_task_policy" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "ecs_bedrock_access" {
+  role = aws_iam_role.ecs_task_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = ["bedrock:InvokeModel"]
+      Resource = "*"
+    }]
+  })
+}
+
 
 
 resource "aws_security_group" "alb" {
