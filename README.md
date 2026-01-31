@@ -40,7 +40,7 @@ The service provides a scalable API for uploading, storing, and retrieving docum
 ---
 
 ## Local Development
-See [docs/local-development.md](docs/local-dev.md)
+See [docs/local_dev.md](docs/local-dev.md)
 
 ## Deployment
 See [docs/deployment.md](docs/deployment.md)
